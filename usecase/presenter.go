@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"memo_sample/domain/model"
+	"memo_sample_spanner/domain/model"
 )
 
 // Presenter presenter interface

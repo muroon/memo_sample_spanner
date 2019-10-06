@@ -2,7 +2,7 @@ package loggersub
 
 import (
 	"log"
-	"memo_sample/infra/logger"
+	"memo_sample_spanner/infra/logger"
 )
 
 // NewLogger new log manager

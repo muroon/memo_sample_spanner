@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"memo_sample/domain/model"
-	"memo_sample/infra/error"
-	"memo_sample/infra/logger"
-	"memo_sample/usecase"
-	"memo_sample/view/render"
+	"memo_sample_spanner/domain/model"
+	"memo_sample_spanner/infra/error"
+	"memo_sample_spanner/infra/logger"
+	"memo_sample_spanner/usecase"
+	"memo_sample_spanner/view/render"
 	"net/http"
 )
 

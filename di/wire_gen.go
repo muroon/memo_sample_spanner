@@ -6,13 +6,13 @@
 package di
 
 import (
-	"memo_sample/adapter/db"
-	"memo_sample/adapter/error"
-	"memo_sample/adapter/logger"
-	"memo_sample/adapter/memory"
-	"memo_sample/adapter/view/render"
-	"memo_sample/interface/api"
-	"memo_sample/usecase"
+	"memo_sample_spanner/adapter/db"
+	"memo_sample_spanner/adapter/error"
+	"memo_sample_spanner/adapter/logger"
+	"memo_sample_spanner/adapter/memory"
+	"memo_sample_spanner/adapter/view/render"
+	"memo_sample_spanner/interface/api"
+	"memo_sample_spanner/usecase"
 
 	"github.com/google/wire"
 )

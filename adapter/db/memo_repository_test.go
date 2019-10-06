@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"memo_sample/domain/repository"
+	"memo_sample_spanner/domain/repository"
 	"testing"
 )
 

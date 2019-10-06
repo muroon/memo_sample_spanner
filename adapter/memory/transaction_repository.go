@@ -2,7 +2,7 @@ package memory
 
 import (
 	"context"
-	"memo_sample/domain/repository"
+	"memo_sample_spanner/domain/repository"
 )
 
 // NewTransactionRepository get repository

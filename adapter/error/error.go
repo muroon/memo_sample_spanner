@@ -2,7 +2,7 @@ package apperrorsub
 
 import (
 	"fmt"
-	"memo_sample/infra/error"
+	"memo_sample_spanner/infra/error"
 
 	"github.com/srvc/fail"
 )

@@ -3,8 +3,8 @@ package memory
 import (
 	"context"
 	"fmt"
-	"memo_sample/domain/model"
-	"memo_sample/domain/repository"
+	"memo_sample_spanner/domain/model"
+	"memo_sample_spanner/domain/repository"
 	"strings"
 )
 

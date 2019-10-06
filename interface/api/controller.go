@@ -1,9 +1,9 @@
 package api
 
 import (
-	"memo_sample/infra/logger"
-	"memo_sample/usecase"
-	"memo_sample/usecase/input"
+	"memo_sample_spanner/infra/logger"
+	"memo_sample_spanner/usecase"
+	"memo_sample_spanner/usecase/input"
 	"net/http"
 )
 

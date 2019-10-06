@@ -2,9 +2,9 @@ package view
 
 import (
 	"fmt"
-	"memo_sample/domain/model"
-	"memo_sample/view/model/json"
-	"memo_sample/view/render"
+	"memo_sample_spanner/domain/model"
+	"memo_sample_spanner/view/model/json"
+	"memo_sample_spanner/view/render"
 )
 
 // NewJSONRender new json render

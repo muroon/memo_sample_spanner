@@ -1,12 +1,12 @@
 package testutil
 
 import (
-	"memo_sample/adapter/db"
-	"memo_sample/adapter/error"
-	"memo_sample/adapter/memory"
-	"memo_sample/domain/repository"
-	"memo_sample/infra/database"
-	"memo_sample/infra/error"
+	"memo_sample_spanner/adapter/db"
+	"memo_sample_spanner/adapter/error"
+	"memo_sample_spanner/adapter/memory"
+	"memo_sample_spanner/domain/repository"
+	"memo_sample_spanner/infra/database"
+	"memo_sample_spanner/infra/error"
 )
 
 // NewTestManager test util

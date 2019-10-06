@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"memo_sample/domain/repository"
-	"memo_sample/infra/error"
-	"memo_sample/testutil"
+	"memo_sample_spanner/domain/repository"
+	"memo_sample_spanner/infra/error"
+	"memo_sample_spanner/testutil"
 )
 
 var testManager testutil.TestManager

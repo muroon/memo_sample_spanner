@@ -3,8 +3,8 @@ package db
 import (
 	"context"
 	"database/sql"
-	"memo_sample/domain/model"
-	"memo_sample/domain/repository"
+	"memo_sample_spanner/domain/model"
+	"memo_sample_spanner/domain/repository"
 
 	"net/http"
 )

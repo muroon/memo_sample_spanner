@@ -1,8 +1,8 @@
 package render
 
 import (
-	"memo_sample/domain/model"
-	"memo_sample/view/model/json"
+	"memo_sample_spanner/domain/model"
+	"memo_sample_spanner/view/model/json"
 )
 
 // JSONRender api render interface

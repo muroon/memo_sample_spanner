@@ -3,9 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
-	"memo_sample/adapter/error"
-	"memo_sample/infra/database"
-	"memo_sample/infra/error"
+	"memo_sample_spanner/adapter/error"
+	"memo_sample_spanner/infra/database"
+	"memo_sample_spanner/infra/error"
 )
 
 var dbm *database.DBM

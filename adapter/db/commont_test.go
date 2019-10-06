@@ -1,7 +1,7 @@
 package db
 
 import (
-	"memo_sample/domain/repository"
+	"memo_sample_spanner/domain/repository"
 )
 
 // connectTestDB DB接続

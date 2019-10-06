@@ -1,8 +1,8 @@
 package main
 
 import (
-	"memo_sample/di"
-	"memo_sample/infra/database"
+	"memo_sample_spanner/di"
+	"memo_sample_spanner/infra/database"
 	"net/http"
 )
 

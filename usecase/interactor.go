@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"memo_sample/usecase/input"
+	"memo_sample_spanner/usecase/input"
 )
 
 // NewInteractor new Interactor

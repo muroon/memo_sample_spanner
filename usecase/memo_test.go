@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"encoding/json"
-	"memo_sample/usecase/input"
+	"memo_sample_spanner/usecase/input"
 	"strings"
 	"testing"
 )
