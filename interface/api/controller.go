@@ -8,8 +8,8 @@ import (
 )
 
 // NewAPI Get API instance
-func NewAPI(it usecase.Interactor, log logger.Logger) API {
-	return controller{it, log}
+func NewAPI(it usecase.IInteractor, log logger.Logger) API {
+	return &controller{it, log}
 }
 
 // API api instance
@@ -21,12 +21,12 @@ type API interface {
 }
 
 type controller struct {
-	it  usecase.Interactor
+	it  usecase.IInteractor
 	log logger.Logger
 }
 
 // PostMemo post new memo
-func (c controller) PostMemo(w http.ResponseWriter, r *http.Request) {
+func (c *controller) PostMemo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ctx = addResponseWriter(ctx, w)
@@ -36,7 +36,7 @@ func (c controller) PostMemo(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetMemos get all memo
-func (c controller) GetMemos(w http.ResponseWriter, r *http.Request) {
+func (c *controller) GetMemos(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ctx = addResponseWriter(ctx, w)
@@ -45,7 +45,7 @@ func (c controller) GetMemos(w http.ResponseWriter, r *http.Request) {
 }
 
 // PostMemoAndTags save memo and tags
-func (c controller) PostMemoAndTags(w http.ResponseWriter, r *http.Request) {
+func (c *controller) PostMemoAndTags(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	r.ParseForm()
@@ -63,7 +63,7 @@ func (c controller) PostMemoAndTags(w http.ResponseWriter, r *http.Request) {
 }
 
 // SearchTagsAndMemos save memo and tags
-func (c controller) SearchTagsAndMemos(w http.ResponseWriter, r *http.Request) {
+func (c *controller) SearchTagsAndMemos(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ctx = addResponseWriter(ctx, w)

@@ -13,12 +13,12 @@ type PostMemoAndTags struct {
 
 // GetMemo Input Entity For Get Memo
 type GetMemo struct {
-	ID int
+	ID string
 }
 
 // GetTagsByMemo Input Entity For GetTagsByMemo
 type GetTagsByMemo struct {
-	ID int
+	ID string
 }
 
 // SearchTagsAndMemos Input Entity For SearchTagsAndMemos

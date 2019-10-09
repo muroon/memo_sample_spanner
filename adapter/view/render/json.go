@@ -17,8 +17,8 @@ type jsonRender struct {
 
 func (m jsonRender) ConvertMemo(md *model.Memo) *json.Memo {
 	mj := &json.Memo{
-		ID:   md.ID,
-		Text: md.Text,
+		MemoID: md.MemoID,
+		Text:   md.Text.StringVal,
 	}
 	return mj
 }
@@ -33,8 +33,8 @@ func (m jsonRender) ConvertMemos(list []*model.Memo) []*json.Memo {
 
 func (m jsonRender) ConvertTag(md *model.Tag) *json.Tag {
 	mj := &json.Tag{
-		ID:    md.ID,
-		Title: md.Title,
+		TagID: md.TagID,
+		Title: md.Title.StringVal,
 	}
 	return mj
 }

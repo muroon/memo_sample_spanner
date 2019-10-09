@@ -2,35 +2,58 @@ package usecase
 
 import (
 	"context"
+	"memo_sample_spanner/domain/transaction"
 	"memo_sample_spanner/usecase/input"
 )
+
+type IInteractor interface {
+	PostMemo(ctx context.Context, ipt input.PostMemo)
+	GetMemos(ctx context.Context)
+	PostMemoAndTags(ctx context.Context, ipt input.PostMemoAndTags)
+	SearchTagsAndMemos(ctx context.Context, ipt input.SearchTagsAndMemos)
+}
 
 // NewInteractor new Interactor
 func NewInteractor(
 	pre Presenter,
-	me Memo,
-) Interactor {
-	return Interactor{pre, me}
+	tx transaction.ITransaction,
+	memo Memo,
+) IInteractor {
+	return &interactor{
+		pre:  pre,
+		tx:   tx,
+		memo: memo,
+	}
 }
 
-// Interactor usecase interactor
-type Interactor struct {
+// interactor usecase interactor
+type interactor struct {
 	pre  Presenter
+	tx   transaction.ITransaction
 	memo Memo
 }
 
 // PostMemo post memo
-func (i Interactor) PostMemo(ctx context.Context, ipt input.PostMemo) {
-	err := i.memo.ValidatePost(ipt)
-	if err != nil {
-		i.pre.ViewError(ctx, err)
-		return
-	}
+func (i *interactor) PostMemo(ctx context.Context, ipt input.PostMemo) {
+	var id string
+	_, err := i.tx.ReadWriteTransaction(ctx,
+		func(ctx context.Context) error {
+			err := i.memo.ValidatePost(ipt)
+			if err != nil {
+				return err
+			}
 
-	id, err := i.memo.Post(ctx, ipt)
+			id, err = i.memo.Post(ctx, ipt)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		},
+	)
+
 	if err != nil {
 		i.pre.ViewError(ctx, err)
-		return
 	}
 
 	iptf := &input.GetMemo{ID: id}
@@ -44,7 +67,7 @@ func (i Interactor) PostMemo(ctx context.Context, ipt input.PostMemo) {
 }
 
 // GetMemos get all memos
-func (i Interactor) GetMemos(ctx context.Context) {
+func (i *interactor) GetMemos(ctx context.Context) {
 
 	memos, err := i.memo.GetAllMemoList(ctx)
 	if err != nil {
@@ -56,30 +79,43 @@ func (i Interactor) GetMemos(ctx context.Context) {
 }
 
 // PostMemoAndTags save memo and tags
-func (i Interactor) PostMemoAndTags(ctx context.Context, ipt input.PostMemoAndTags) {
-	err := i.memo.ValidatePostMemoAndTags(ipt)
+func (i *interactor) PostMemoAndTags(ctx context.Context, ipt input.PostMemoAndTags) {
+	_, err := i.tx.ReadWriteTransaction(ctx,
+		func(ctx context.Context) error {
+
+			err := i.memo.ValidatePostMemoAndTags(ipt)
+			if err != nil {
+				return err
+			}
+
+			memo, tags, err := i.memo.PostMemoAndTags(ctx, ipt)
+			if err != nil {
+				return err
+			}
+
+			i.pre.ViewPostMemoAndTagsResult(ctx, memo, tags)
+			return nil
+		},
+	)
+
 	if err != nil {
 		i.pre.ViewError(ctx, err)
-		return
 	}
-
-	memo, tags, err := i.memo.PostMemoAndTags(ctx, ipt)
-	if err != nil {
-		i.pre.ViewError(ctx, err)
-		return
-	}
-
-	i.pre.ViewPostMemoAndTagsResult(ctx, memo, tags)
 }
 
 // SearchTagsAndMemos save memo and tags
-func (i Interactor) SearchTagsAndMemos(ctx context.Context, ipt input.SearchTagsAndMemos) {
+func (i *interactor) SearchTagsAndMemos(ctx context.Context, ipt input.SearchTagsAndMemos) {
+	err := i.tx.ReadOnlyTransaction(ctx, func(ctx context.Context) error {
+		memos, tags, err := i.memo.SearchTagsAndMemos(ctx, ipt)
+		if err != nil {
+			return err
+		}
 
-	memos, tags, err := i.memo.SearchTagsAndMemos(ctx, ipt)
+		i.pre.ViewSearchTagsAndMemosResult(ctx, memos, tags)
+		return nil
+	})
+
 	if err != nil {
 		i.pre.ViewError(ctx, err)
-		return
 	}
-
-	i.pre.ViewSearchTagsAndMemosResult(ctx, memos, tags)
 }

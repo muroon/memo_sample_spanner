@@ -2,13 +2,13 @@ package json
 
 // Memo Memo's Out Entity
 type Memo struct {
-	ID   int    `json:"id"`
-	Text string `json:"text"`
+	MemoID string `json:"memo_id"`
+	Text   string `json:"text"`
 }
 
 // Tag Tag's Out Entity
 type Tag struct {
-	ID    int    `json:"id"`
+	TagID string `json:"tag_id"`
 	Title string `json:"title"`
 }
 

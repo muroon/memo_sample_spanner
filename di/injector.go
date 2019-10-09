@@ -3,10 +3,9 @@
 package di
 
 import (
-	"memo_sample_spanner/adapter/db"
 	"memo_sample_spanner/adapter/error"
 	"memo_sample_spanner/adapter/logger"
-	"memo_sample_spanner/adapter/memory"
+	"memo_sample_spanner/adapter/spanner"
 	view "memo_sample_spanner/adapter/view/render"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
@@ -30,29 +29,25 @@ var ProvidePresenter = wire.NewSet(
 
 // ProvideMemoUsecase inject memo usecase using wire
 var ProvideMemoUsecase = wire.NewSet(
-	ProvideDBRepository, // or ProvideInMemoryRepository
+	ProvideSpannerRepository,
 	usecase.NewMemo,
 )
 
 // ProvideUsecaseIterator inject usecase itetator using wire
 var ProvideUsecaseIterator = wire.NewSet(
 	ProvidePresenter,
+	ProviderTransaction,
 	ProvideMemoUsecase,
 	usecase.NewInteractor,
 )
 
-// ProvideInMemoryRepository inject repository using wire
-var ProvideInMemoryRepository = wire.NewSet(
-	memory.NewTransactionRepository,
-	memory.NewMemoRepository,
-	memory.NewTagRepository,
+var ProviderTransaction = wire.NewSet(
+	spanner.NewTransaction,
 )
 
-// ProvideDBRepository inject repository using wire
-var ProvideDBRepository = wire.NewSet(
-	db.NewTransactionRepository,
-	db.NewMemoRepository,
-	db.NewTagRepository,
+var ProvideSpannerRepository = wire.NewSet(
+	spanner.NewMemoRepository,
+	spanner.NewTagRepository,
 )
 
 // ProvideLog inject log using wire

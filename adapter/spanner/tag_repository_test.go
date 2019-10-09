@@ -1,8 +1,9 @@
-package memory
+package spanner
 
 import (
 	"context"
 	"fmt"
+	"memo_sample_spanner/domain/model"
 	"testing" // テストで使える関数・構造体が用意されているパッケージをimport
 )
 
@@ -11,95 +12,85 @@ func TestTagSaveInDBSuccess(t *testing.T) {
 	repo := NewTagRepository()
 
 	ctx := context.Background()
+	connectTestDB(ctx)
+	defer closeTestDB()
 
 	me, err := repo.Save(ctx, "Tag First")
 	if err != nil {
 		t.Error("failed TestTagSaveInDBSuccess Save", err)
 	}
 
-	memo, err := repo.Get(ctx, me.ID)
+	tag, err := repo.Get(ctx, me.TagID)
 	if err != nil {
 		t.Error("failed TestTagSaveInDBSuccess Get", err)
 	}
 
-	t.Log(memo)
+	t.Log(tag)
+
 }
 
 func TestTagAndMemoGetAllByMemoIDSuccess(t *testing.T) {
 
-	repoTx := NewTransactionRepository()
+	tx := NewTransaction()
 	repoT := NewTagRepository()
 	repoM := NewMemoRepository()
 
 	ctx := context.Background()
 
-	defer func() {
-		if err := recover(); err != nil {
-			repoTx.Rollback(ctx)
-			t.Error(err)
+	connectTestDB(ctx)
+	defer closeTestDB()
+
+	var memo *model.Memo
+	var tag *model.Tag
+	_, err := tx.ReadWriteTransaction(ctx, func(ctx context.Context) (err error) {
+		memo, err = repoM.Save(ctx, "GetAllByMemoID Test Memo")
+		if err != nil {
+			return err
 		}
-	}()
 
-	ctx, err := repoTx.Begin(ctx)
+		tag, err = repoT.Save(ctx, "GetAllByMemoID Test Tag")
+		if err != nil {
+			return err
+		}
+
+		err = repoT.SaveTagAndMemo(ctx, tag.TagID, memo.MemoID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		panic(err)
+		t.Error(err)
+		return
 	}
 
-	memo, err := repoM.Save(ctx, "GetAllByMemoID Test Memo")
-	if err != nil {
-		panic(err)
-	}
-
-	tag, err := repoT.Save(ctx, "GetAllByMemoID Test Tag")
-	if err != nil {
-		panic(err)
-	}
-
-	err = repoT.SaveTagAndMemo(ctx, tag.ID, memo.ID)
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err = repoTx.Commit(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	t.Logf("TestTagAndMemoGetAllByMemoIDSuccess targetMemoID:%d", memo.ID)
+	t.Logf("TestTagAndMemoGetAllByMemoIDSuccess targetMemoID:%s", memo.MemoID)
 
 	flag := false
-	list, err := repoT.GetAllByMemoID(ctx, memo.ID)
+	list, err := repoT.GetAllByMemoID(ctx, memo.MemoID)
 	for _, tg := range list {
-		if tg.ID == tag.ID {
+		if tg.TagID == tag.TagID {
 			flag = true
 			t.Log(tg)
 		}
 	}
 
 	if !flag {
-		panic(fmt.Errorf("GetAllByMemoID Error"))
+		t.Error(fmt.Errorf("GetAllByMemoID Error"))
 	}
 }
 
 func TestTagAndMemoSearchMemoIDsByTitleSuccess(t *testing.T) {
 
-	repoTx := NewTransactionRepository()
 	repoT := NewTagRepository()
 	repoM := NewMemoRepository()
 
 	ctx := context.Background()
 
-	defer func() {
-		if err := recover(); err != nil {
-			repoTx.Rollback(ctx)
-			t.Error(err)
-		}
-	}()
-
-	ctx, err := repoTx.Begin(ctx)
-	if err != nil {
-		panic(err)
-	}
+	connectTestDB(ctx)
+	defer closeTestDB()
 
 	memo, err := repoM.Save(ctx, "SearchMemoIDsByTitle Test Memo")
 	if err != nil {
@@ -111,20 +102,15 @@ func TestTagAndMemoSearchMemoIDsByTitleSuccess(t *testing.T) {
 		panic(err)
 	}
 
-	err = repoT.SaveTagAndMemo(ctx, tag.ID, memo.ID)
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err = repoTx.Commit(ctx)
+	err = repoT.SaveTagAndMemo(ctx, tag.TagID, memo.MemoID)
 	if err != nil {
 		panic(err)
 	}
 
 	flag := false
-	list, err := repoT.SearchMemoIDsByTitle(ctx, tag.Title)
+	list, err := repoT.SearchMemoIDsByTitle(ctx, tag.Title.StringVal)
 	for _, id := range list {
-		if id == memo.ID {
+		if id == memo.MemoID {
 			flag = true
 		}
 	}

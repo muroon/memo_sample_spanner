@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
 	"memo_sample_spanner/di"
-	"memo_sample_spanner/infra/database"
+	"memo_sample_spanner/infra/cloudspanner"
 	"net/http"
 )
 
 func main() {
-	(*database.GetDBM()).ConnectDB()
-	defer (*database.GetDBM()).CloseDB()
+	//(*database.GetDBM()).ConnectDB()     // TODO:
+	//defer (*database.GetDBM()).CloseDB() // TODO:
+
+	cloudspanner.OpenClient(context.Background())
+	defer cloudspanner.CloseClient()
 
 	api := di.InjectAPIServer()
 	http.HandleFunc("/", api.GetMemos)

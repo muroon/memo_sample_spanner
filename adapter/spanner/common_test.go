@@ -1,0 +1,16 @@
+package spanner
+
+import (
+	"context"
+	"memo_sample_spanner/infra/cloudspanner"
+)
+
+// connectTestDB DB接続
+func connectTestDB(ctx context.Context) {
+	cloudspanner.OpenClient(ctx)
+}
+
+// closeTestDB DB切断
+func closeTestDB() {
+	cloudspanner.CloseClient()
+}

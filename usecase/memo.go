@@ -13,7 +13,7 @@ import (
 // Memo memo related interface
 type Memo interface {
 	ValidatePost(ipt input.PostMemo) error
-	Post(ctx context.Context, ipt input.PostMemo) (int, error)
+	Post(ctx context.Context, ipt input.PostMemo) (string, error)
 	ValidateGet(ipt input.GetMemo) error
 	GetMemo(ctx context.Context, ipt input.GetMemo) (*model.Memo, error)
 	GetAllMemoList(ctx context.Context) ([]*model.Memo, error)
@@ -25,13 +25,11 @@ type Memo interface {
 
 // NewMemo generate memo instance
 func NewMemo(
-	transactionRepository repository.TransactionRepository,
 	memoRepository repository.MemoRepository,
 	tagRepository repository.TagRepository,
 	errm apperror.ErrorManager,
 ) Memo {
 	return memo{
-		transactionRepository,
 		memoRepository,
 		tagRepository,
 		errm,
@@ -39,10 +37,9 @@ func NewMemo(
 }
 
 type memo struct {
-	transactionRepository repository.TransactionRepository
-	memoRepository        repository.MemoRepository
-	tagRepository         repository.TagRepository
-	errm                  apperror.ErrorManager
+	memoRepository repository.MemoRepository
+	tagRepository  repository.TagRepository
+	errm           apperror.ErrorManager
 }
 
 func (m memo) ValidatePost(ipt input.PostMemo) error {
@@ -57,17 +54,17 @@ func (m memo) ValidatePost(ipt input.PostMemo) error {
 	return nil
 }
 
-func (m memo) Post(ctx context.Context, ipt input.PostMemo) (int, error) {
+func (m memo) Post(ctx context.Context, ipt input.PostMemo) (string, error) {
 	mo, err := m.memoRepository.Save(ctx, ipt.Text)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	return mo.ID, err
+	return mo.MemoID, err
 }
 
 func (m memo) ValidateGet(ipt input.GetMemo) error {
-	if ipt.ID <= 0 {
-		err := fmt.Errorf("ID parameter is invalid. %d", ipt.ID)
+	if ipt.ID == "" {
+		err := fmt.Errorf("ID parameter is invalid. %s", ipt.ID)
 		return m.errm.Wrap(
 			err,
 			http.StatusBadRequest,
@@ -118,18 +115,11 @@ func (m memo) ValidatePostMemoAndTags(ipt input.PostMemoAndTags) error {
 }
 
 func (m memo) PostMemoAndTags(ctx context.Context, ipt input.PostMemoAndTags) (*model.Memo, []*model.Tag, error) {
-	tags := []*model.Tag{}
-
-	ctx, err := m.transactionRepository.Begin(ctx)
-	if err != nil {
-		m.transactionRepository.Rollback(ctx)
-		return nil, nil, err
-	}
+	tags := make([]*model.Tag, 0)
 
 	// Memo
 	mo, err := m.memoRepository.Save(ctx, ipt.MemoText)
 	if err != nil {
-		m.transactionRepository.Rollback(ctx)
 		return nil, nil, err
 	}
 
@@ -137,20 +127,16 @@ func (m memo) PostMemoAndTags(ctx context.Context, ipt input.PostMemoAndTags) (*
 		// Tag
 		tg, err := m.tagRepository.Save(ctx, title)
 		if err != nil {
-			m.transactionRepository.Rollback(ctx)
 			return nil, nil, err
 		}
 		tags = append(tags, tg)
 
 		// MemoTag
-		err = m.tagRepository.SaveTagAndMemo(ctx, tg.ID, mo.ID)
+		err = m.tagRepository.SaveTagAndMemo(ctx, tg.TagID, mo.MemoID)
 		if err != nil {
-			m.transactionRepository.Rollback(ctx)
 			return nil, nil, err
 		}
 	}
-
-	m.transactionRepository.Commit(ctx)
 
 	return mo, tags, nil
 }
@@ -170,14 +156,19 @@ func (m memo) SearchTagsAndMemos(ctx context.Context, ipt input.SearchTagsAndMem
 		return nil, nil, err
 	}
 
-	tags := []*model.Tag{}
+	tags := make([]*model.Tag, 0)
+	tagIDMap := make(map[string]int)
 	for _, mID := range mIDs {
 		tgs, err := m.tagRepository.GetAllByMemoID(ctx, mID)
 		if err != nil {
 			return nil, nil, err
 		}
 		for _, tg := range tgs {
-			tags = append(tgs, tg)
+			if _, ok := tagIDMap[tg.TagID]; ok {
+				continue
+			}
+			tags = append(tags, tg)
+			tagIDMap[tg.TagID] = 1
 		}
 	}
 

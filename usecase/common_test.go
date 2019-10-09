@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"memo_sample_spanner/adapter/spanner"
 	"memo_sample_spanner/domain/repository"
+	"memo_sample_spanner/domain/transaction"
 	"memo_sample_spanner/infra/error"
 	"memo_sample_spanner/testutil"
 )
@@ -12,14 +14,16 @@ func init() {
 	testManager = testutil.NewTestManager()
 }
 
-// getInMemoryRepository get memory repository
-func getInMemoryRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager) {
-	return testManager.GgetInMemoryRepository()
+// getSpannerRepository spanner repository
+func getSpannerRepository() (
+	repository.MemoRepository, repository.TagRepository, apperror.ErrorManager,
+) {
+	return testManager.GetSpannerRepository()
 }
 
-// getDBRepository get db repository
-func getDBRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager) {
-	return testManager.GetDBRepository()
+// getSpannerTransaction get transaction
+func getSpannerTransaction() transaction.ITransaction {
+	return spanner.NewTransaction()
 }
 
 // connectTestDB DB接続

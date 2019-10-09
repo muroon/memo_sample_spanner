@@ -1,11 +1,11 @@
 package testutil
 
 import (
-	"memo_sample_spanner/adapter/db"
+	"context"
 	"memo_sample_spanner/adapter/error"
-	"memo_sample_spanner/adapter/memory"
+	"memo_sample_spanner/adapter/spanner"
 	"memo_sample_spanner/domain/repository"
-	"memo_sample_spanner/infra/database"
+	"memo_sample_spanner/infra/cloudspanner"
 	"memo_sample_spanner/infra/error"
 )
 
@@ -16,8 +16,7 @@ func NewTestManager() TestManager {
 
 // TestManager test manager
 type TestManager interface {
-	GgetInMemoryRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager)
-	GetDBRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager)
+	GetSpannerRepository() (repository.MemoRepository, repository.TagRepository, apperror.ErrorManager)
 	ConnectTestDB() error
 	CloseTestDB() error
 }
@@ -26,20 +25,19 @@ type TestManager interface {
 type testManager struct {
 }
 
-func (t testManager) GgetInMemoryRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager) {
-	return memory.NewTransactionRepository(), memory.NewMemoRepository(), memory.NewTagRepository(), apperrorsub.NewErrorManager()
-}
-
-func (t testManager) GetDBRepository() (repository.TransactionRepository, repository.MemoRepository, repository.TagRepository, apperror.ErrorManager) {
-	return db.NewTransactionRepository(), db.NewMemoRepository(), db.NewTagRepository(), apperrorsub.NewErrorManager()
+func (t testManager) GetSpannerRepository() (
+	repository.MemoRepository, repository.TagRepository, apperror.ErrorManager,
+) {
+	return spanner.NewMemoRepository(), spanner.NewTagRepository(), apperrorsub.NewErrorManager()
 }
 
 // connectTestDB DB接続
 func (t testManager) ConnectTestDB() error {
-	return (*database.GetDBM()).ConnectTestDB()
+	return cloudspanner.OpenClient(context.Background())
 }
 
 // closeTestDB DB切断
 func (t testManager) CloseTestDB() error {
-	return (*database.GetDBM()).CloseDB()
+	cloudspanner.CloseClient()
+	return nil
 }
