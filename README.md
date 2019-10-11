@@ -1,7 +1,17 @@
-# memo sample
+# memo sample spanner
 
-The Sample Code OF "The Clean Architecture"
+The sample code of Cloud Spanner using "The Clean Architecture"
 
-<img width="1522" alt="overview" src="https://user-images.githubusercontent.com/301822/54485896-053a2f80-48c4-11e9-8709-d5a4c6ae9512.png">
+[old project](https://github.com/muroon/memo_sample)
 
-https://qiita.com/muroon/items/8add8da911341312176d
+[description of this project](https://gist.github.com/muroon/7daf23236777991a058544bd01ab9cc0)
+
+### environment variable
+
+| env | content |
+----|----
+| SPN_PROJECT_ID | GCP project ID |
+| SPN_INSTANCE_ID | instance ID of Cloud Spanner |
+| SPN_DATABASE_ID | database in instance  |
+
+

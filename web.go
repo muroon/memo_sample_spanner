@@ -8,9 +8,6 @@ import (
 )
 
 func main() {
-	//(*database.GetDBM()).ConnectDB()     // TODO:
-	//defer (*database.GetDBM()).CloseDB() // TODO:
-
 	cloudspanner.OpenClient(context.Background())
 	defer cloudspanner.CloseClient()
 
