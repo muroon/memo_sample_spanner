@@ -2,7 +2,6 @@ package testutil
 
 import (
 	"context"
-	"memo_sample_spanner/adapter/error"
 	"memo_sample_spanner/adapter/spanner"
 	"memo_sample_spanner/domain/repository"
 	"memo_sample_spanner/infra/cloudspanner"
@@ -28,7 +27,7 @@ type testManager struct {
 func (t testManager) GetSpannerRepository() (
 	repository.MemoRepository, repository.TagRepository, apperror.ErrorManager,
 ) {
-	return spanner.NewMemoRepository(), spanner.NewTagRepository(), apperrorsub.NewErrorManager()
+	return spanner.NewMemoRepository(), spanner.NewTagRepository(), apperror.NewErrorManager()
 }
 
 // connectTestDB DB接続

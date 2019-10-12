@@ -7,10 +7,10 @@ package di
 
 import (
 	"github.com/google/wire"
-	"memo_sample_spanner/adapter/error"
 	"memo_sample_spanner/adapter/logger"
 	"memo_sample_spanner/adapter/spanner"
 	"memo_sample_spanner/adapter/view/render"
+	"memo_sample_spanner/infra/error"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
 )
@@ -20,7 +20,7 @@ import (
 func InjectAPIServer() api.API {
 	jsonRender := view.NewJSONRender()
 	logger := loggersub.NewLogger()
-	errorManager := apperrorsub.NewErrorManager()
+	errorManager := apperror.NewErrorManager()
 	presenter := api.NewPresenter(jsonRender, logger, errorManager)
 	iTransaction := spanner.NewTransaction()
 	memoRepository := spanner.NewMemoRepository()
@@ -67,4 +67,4 @@ var ProvideLog = wire.NewSet(loggersub.NewLogger)
 var ProvideRender = wire.NewSet(view.NewJSONRender)
 
 // ProvideErrorManager inject error manager using wire
-var ProvideErrorManager = wire.NewSet(apperrorsub.NewErrorManager)
+var ProvideErrorManager = wire.NewSet(apperror.NewErrorManager)

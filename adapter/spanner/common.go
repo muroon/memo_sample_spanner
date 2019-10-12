@@ -3,9 +3,17 @@ package spanner
 import (
 	"memo_sample_spanner/domain/model"
 	"memo_sample_spanner/infra/cloudspanner"
+	"memo_sample_spanner/infra/error"
+	"net/http"
 
 	"github.com/google/uuid"
 )
+
+var errm apperror.ErrorManager
+
+func init() {
+	errm = apperror.NewErrorManager()
+}
 
 // yoRODB get YORODB instance
 func yoRODB() model.YORODB {
@@ -16,7 +24,7 @@ func yoRODB() model.YORODB {
 func generateID() (string, error) {
 	u4, err := uuid.NewRandom()
 	if err != nil {
-		return "", err
+		return "", errm.Wrap(err, http.StatusInternalServerError)
 	}
 
 	return u4.String(), nil

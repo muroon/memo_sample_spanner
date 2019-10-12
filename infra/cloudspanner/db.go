@@ -3,6 +3,7 @@ package cloudspanner
 import (
 	"context"
 	"fmt"
+	apperror "memo_sample_spanner/infra/error"
 	"time"
 
 	"cloud.google.com/go/spanner"
@@ -40,6 +41,7 @@ func newSpannerDB(opts ...Option) ISpannerDB {
 	for _, opt := range opts {
 		opt(s)
 	}
+	s.errManager = apperror.NewErrorManager()
 	return s
 }
 
@@ -72,6 +74,7 @@ type spannerDB struct {
 	instanceID string
 	databaseID string
 	client     *spanner.Client
+	errManager apperror.ErrorManager
 }
 
 func (d *spannerDB) OpenClient(ctx context.Context) error {

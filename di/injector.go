@@ -3,10 +3,10 @@
 package di
 
 import (
-	"memo_sample_spanner/adapter/error"
 	"memo_sample_spanner/adapter/logger"
 	"memo_sample_spanner/adapter/spanner"
 	view "memo_sample_spanner/adapter/view/render"
+	"memo_sample_spanner/infra/error"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
 
@@ -57,7 +57,7 @@ var ProvideLog = wire.NewSet(loggersub.NewLogger)
 var ProvideRender = wire.NewSet(view.NewJSONRender)
 
 // ProvideErrorManager inject error manager using wire
-var ProvideErrorManager = wire.NewSet(apperrorsub.NewErrorManager)
+var ProvideErrorManager = wire.NewSet(apperror.NewErrorManager)
 
 // InjectAPIServer build inject api using wire
 func InjectAPIServer() api.API {
