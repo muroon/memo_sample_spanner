@@ -193,3 +193,44 @@ func (m *tagRepository) SearchMemoIDsByTitle(ctx context.Context, title string) 
 
 	return list, nil
 }
+
+// SearchMemoAndTagByTagTitle search memo ids by tag's title
+func (m *tagRepository) SearchMemoAndTagByTagTitle(ctx context.Context, title string) (
+	[]*model.Memo, []*model.Tag, error,
+) {
+	memos := make([]*model.Memo, 0)
+	tags := make([]*model.Tag, 0)
+
+	yoDB := yoRODB()
+
+	stmt := spanner.Statement{
+		SQL: `SELECT Memo.*, Tag.* FROM Memo, Tag, TagMemo WHERE Memo.MemoID = TagMemo.MemoID AND Tag.TagID = TagMemo.TagID AND STARTS_WITH(Tag.Title, @title)`,
+		Params: map[string]interface{}{
+			"title": title,
+		},
+	}
+
+	iter := yoDB.Query(ctx, stmt)
+	defer iter.Stop()
+	for {
+		row, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return memos, tags, err
+		}
+
+		memo := new(model.Memo)
+		tag := new(model.Tag)
+
+		if err := row.Columns(&memo.MemoID, &memo.Text, &tag.TagID, &tag.Title); err != nil {
+			return memos, tags, err
+		}
+
+		memos = append(memos, memo)
+		tags = append(tags, tag)
+	}
+
+	return memos, tags, nil
+}

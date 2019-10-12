@@ -146,31 +146,5 @@ func (m memo) GetTagsByMemo(ctx context.Context, ipt input.GetTagsByMemo) ([]*mo
 }
 
 func (m memo) SearchTagsAndMemos(ctx context.Context, ipt input.SearchTagsAndMemos) ([]*model.Memo, []*model.Tag, error) {
-	mIDs, err := m.tagRepository.SearchMemoIDsByTitle(ctx, ipt.TagTitle)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	memos, err := m.memoRepository.GetAllByIDs(ctx, mIDs)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	tags := make([]*model.Tag, 0)
-	tagIDMap := make(map[string]int)
-	for _, mID := range mIDs {
-		tgs, err := m.tagRepository.GetAllByMemoID(ctx, mID)
-		if err != nil {
-			return nil, nil, err
-		}
-		for _, tg := range tgs {
-			if _, ok := tagIDMap[tg.TagID]; ok {
-				continue
-			}
-			tags = append(tags, tg)
-			tagIDMap[tg.TagID] = 1
-		}
-	}
-
-	return memos, tags, nil
+	return m.tagRepository.SearchMemoAndTagByTagTitle(ctx, ipt.TagTitle)
 }

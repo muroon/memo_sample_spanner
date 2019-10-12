@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"memo_sample_spanner/domain/model"
+	"strings"
 	"testing" // テストで使える関数・構造体が用意されているパッケージをimport
 )
 
@@ -107,14 +108,39 @@ func TestTagAndMemoSearchMemoIDsByTitleSuccess(t *testing.T) {
 		panic(err)
 	}
 
-	flag := false
 	list, err := repoT.SearchMemoIDsByTitle(ctx, tag.Title.StringVal)
+	if err != nil {
+		panic(err)
+	}
+
+	flag := false
 	for _, id := range list {
 		if id == memo.MemoID {
 			flag = true
 		}
 	}
+	if !flag {
+		t.Error(fmt.Errorf("SearchMemoIDsByTitle Error"))
+	}
 
+	memos, tags, err := repoT.SearchMemoAndTagByTagTitle(ctx, tag.Title.StringVal)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, tg := range tags {
+		if strings.Index(tg.Title.StringVal, tag.Title.StringVal) == -1 {
+			t.Error(fmt.Errorf("SearchMemoIDsByTitle Error"))
+			break
+		}
+	}
+
+	flag = false
+	for _, me := range memos {
+		if me.MemoID == memo.MemoID {
+			flag = true
+		}
+	}
 	if !flag {
 		t.Error(fmt.Errorf("SearchMemoIDsByTitle Error"))
 	}

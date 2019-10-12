@@ -14,4 +14,7 @@ type TagRepository interface {
 	SaveTagAndMemo(ctx context.Context, tagID, memoID string) error
 	GetAllByMemoID(ctx context.Context, id string) ([]*model.Tag, error)
 	SearchMemoIDsByTitle(ctx context.Context, title string) ([]string, error)
+	SearchMemoAndTagByTagTitle(ctx context.Context, title string) (
+		[]*model.Memo, []*model.Tag, error,
+	)
 }
