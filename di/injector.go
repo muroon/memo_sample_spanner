@@ -4,11 +4,11 @@ package di
 
 import (
 	"memo_sample_spanner/adapter/spanner"
-	view "memo_sample_spanner/adapter/view/render"
 	"memo_sample_spanner/infra/error"
 	"memo_sample_spanner/infra/logger"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
+	"memo_sample_spanner/view/render"
 
 	"github.com/google/wire"
 )
@@ -54,7 +54,7 @@ var ProvideSpannerRepository = wire.NewSet(
 var ProvideLog = wire.NewSet(logger.NewLogger)
 
 // ProvideRender inject render using wire
-var ProvideRender = wire.NewSet(view.NewJSONRender)
+var ProvideRender = wire.NewSet(render.NewJSONRender)
 
 // ProvideErrorManager inject error manager using wire
 var ProvideErrorManager = wire.NewSet(apperror.NewErrorManager)
