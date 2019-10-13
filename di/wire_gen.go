@@ -7,10 +7,10 @@ package di
 
 import (
 	"github.com/google/wire"
-	"memo_sample_spanner/adapter/logger"
 	"memo_sample_spanner/adapter/spanner"
 	"memo_sample_spanner/adapter/view/render"
 	"memo_sample_spanner/infra/error"
+	"memo_sample_spanner/infra/logger"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
 )
@@ -19,15 +19,15 @@ import (
 
 func InjectAPIServer() api.API {
 	jsonRender := view.NewJSONRender()
-	logger := loggersub.NewLogger()
+	loggerLogger := logger.NewLogger()
 	errorManager := apperror.NewErrorManager()
-	presenter := api.NewPresenter(jsonRender, logger, errorManager)
+	presenter := api.NewPresenter(jsonRender, loggerLogger, errorManager)
 	iTransaction := spanner.NewTransaction()
 	memoRepository := spanner.NewMemoRepository()
 	tagRepository := spanner.NewTagRepository()
 	memo := usecase.NewMemo(memoRepository, tagRepository, errorManager)
 	iInteractor := usecase.NewInteractor(presenter, iTransaction, memo)
-	apiAPI := api.NewAPI(iInteractor, logger)
+	apiAPI := api.NewAPI(iInteractor, loggerLogger)
 	return apiAPI
 }
 
@@ -61,7 +61,7 @@ var ProviderTransaction = wire.NewSet(spanner.NewTransaction)
 var ProvideSpannerRepository = wire.NewSet(spanner.NewMemoRepository, spanner.NewTagRepository)
 
 // ProvideLog inject log using wire
-var ProvideLog = wire.NewSet(loggersub.NewLogger)
+var ProvideLog = wire.NewSet(logger.NewLogger)
 
 // ProvideRender inject render using wire
 var ProvideRender = wire.NewSet(view.NewJSONRender)

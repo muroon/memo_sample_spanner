@@ -3,10 +3,10 @@
 package di
 
 import (
-	"memo_sample_spanner/adapter/logger"
 	"memo_sample_spanner/adapter/spanner"
 	view "memo_sample_spanner/adapter/view/render"
 	"memo_sample_spanner/infra/error"
+	"memo_sample_spanner/infra/logger"
 	"memo_sample_spanner/interface/api"
 	"memo_sample_spanner/usecase"
 
@@ -51,7 +51,7 @@ var ProvideSpannerRepository = wire.NewSet(
 )
 
 // ProvideLog inject log using wire
-var ProvideLog = wire.NewSet(loggersub.NewLogger)
+var ProvideLog = wire.NewSet(logger.NewLogger)
 
 // ProvideRender inject render using wire
 var ProvideRender = wire.NewSet(view.NewJSONRender)
