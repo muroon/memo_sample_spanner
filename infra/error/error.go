@@ -3,7 +3,7 @@ package apperror
 import (
 	"fmt"
 
-	"github.com/srvc/fail"
+	"golang.org/x/xerrors"
 )
 
 // NewErrorManager new error Manager
@@ -13,22 +13,51 @@ func NewErrorManager() ErrorManager {
 
 type errorManager struct{}
 
+type iWithCodeError interface {
+	Code() int
+}
+
+type withCodeError struct {
+	err   error
+	code  int
+	frame xerrors.Frame
+}
+
+func (c withCodeError) Code() int {
+	return c.code
+}
+
+func (c withCodeError) Error() string {
+	return fmt.Sprintf("code:%d, %#+v", c.code, c.err)
+}
+
+func (c withCodeError) Unwrap() error {
+	return c.err
+}
+
+func (c withCodeError) FormatError(p xerrors.Printer) error {
+	p.Print(c.Error())
+	c.frame.Format(p)
+	return nil
+}
+func (c withCodeError) Format(f fmt.State, ru rune) {
+	xerrors.FormatError(c, f, ru)
+}
+
 func (em errorManager) Wrap(err error, code int) error {
-	return fail.Wrap(
-		err,
-		fail.WithCode(code),
-		fail.WithIgnorable(),
-	)
+	e := xerrors.Errorf("error occurred: %w", err)
+	return &withCodeError{err: e, code: code, frame: xerrors.Caller(1)}
 }
 
 func (em errorManager) LogMessage(err error) string {
-	return fmt.Sprintf("%T\nCode:%d\nStackTrace:%+v\n",
-		err,
-		fail.Unwrap(err).Code,
-		fail.Unwrap(err).StackTrace,
-	)
+	return err.Error()
 }
 
 func (em errorManager) Code(err error) int {
-	return fail.Unwrap(err).Code.(int)
+	var code int
+	if e, ok := err.(iWithCodeError); ok {
+		code = e.Code()
+	}
+
+	return code
 }

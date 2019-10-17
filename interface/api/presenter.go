@@ -68,7 +68,7 @@ func (m presenter) ViewError(ctx context.Context, err error) {
 	defer deleteResponseWriter(ctx)
 	w := getResponseWriter(ctx)
 
-	m.log.Errorf("API: %s\n", m.errm.LogMessage(err))
+	m.log.Errorf("API: (%T) %+v\n", err, err)
 
 	m.JSON(ctx, w, m.render.ConvertError(err, m.errm.Code(err)))
 }
