@@ -2,8 +2,9 @@ package apperror
 
 import (
 	"fmt"
+	"strconv"
 
-	"github.com/srvc/fail"
+	"github.com/morikuni/failure"
 )
 
 // NewErrorManager new error Manager
@@ -14,21 +15,26 @@ func NewErrorManager() ErrorManager {
 type errorManager struct{}
 
 func (em errorManager) Wrap(err error, code int) error {
-	return fail.Wrap(
-		err,
-		fail.WithCode(code),
-		fail.WithIgnorable(),
-	)
+
+	cd := failure.StringCode(fmt.Sprintf("%d", code))
+	err = failure.Wrap(err, failure.WithCode(cd))
+
+	return err
 }
 
 func (em errorManager) LogMessage(err error) string {
-	return fmt.Sprintf("%T\nCode:%d\nStackTrace:%+v\n",
+	return fmt.Sprintf("%T\nCode:%d\n%+v\n",
 		err,
-		fail.Unwrap(err).Code,
-		fail.Unwrap(err).StackTrace,
+		em.Code(err),
+		err,
 	)
 }
 
 func (em errorManager) Code(err error) int {
-	return fail.Unwrap(err).Code.(int)
+	var code int
+	codeVal, ok := failure.CodeOf(err)
+	if ok {
+		code, _ = strconv.Atoi(codeVal.ErrorCode())
+	}
+	return code
 }
