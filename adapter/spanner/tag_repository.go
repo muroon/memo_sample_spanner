@@ -2,10 +2,10 @@ package spanner
 
 import (
 	"context"
+	"memo_sample_spanner/domain/app"
 	"memo_sample_spanner/domain/model"
 	"memo_sample_spanner/domain/repository"
 	"memo_sample_spanner/infra/cloudspanner"
-	"net/http"
 
 	"google.golang.org/api/iterator"
 
@@ -24,7 +24,7 @@ type tagRepository struct{}
 func (m *tagRepository) Save(ctx context.Context, title string) (*model.Tag, error) {
 	id, err := generateID()
 	if err != nil {
-		return nil, errm.Wrap(err, http.StatusInternalServerError)
+		return nil, errm.Wrap(err, app.DBError)
 	}
 
 	mutations := make([]*spanner.Mutation, 0)
@@ -58,13 +58,13 @@ func (m *tagRepository) GetAll(ctx context.Context) ([]*model.Tag, error) {
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		tag := new(model.Tag)
 
 		if err := row.Columns(&tag.TagID, &tag.Title); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, tag)
@@ -94,13 +94,13 @@ func (m *tagRepository) Search(ctx context.Context, title string) ([]*model.Tag,
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		tag := new(model.Tag)
 
 		if err := row.Columns(&tag.TagID, &tag.Title); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, tag)
@@ -144,13 +144,13 @@ func (m *tagRepository) GetAllByMemoID(ctx context.Context, memoID string) ([]*m
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		tag := new(model.Tag)
 
 		if err := row.Columns(&tag.TagID, &tag.Title); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, tag)
@@ -180,13 +180,13 @@ func (m *tagRepository) SearchMemoIDsByTitle(ctx context.Context, title string) 
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		var memoID string
 
 		if err := row.Columns(&memoID); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, memoID)
@@ -219,14 +219,14 @@ func (m *tagRepository) SearchMemoAndTagByTagTitle(ctx context.Context, title st
 			break
 		}
 		if err != nil {
-			return memos, tags, errm.Wrap(err, http.StatusInternalServerError)
+			return memos, tags, errm.Wrap(err, app.DBError)
 		}
 
 		memo := new(model.Memo)
 		tag := new(model.Tag)
 
 		if err := row.Columns(&memo.MemoID, &memo.Text, &tag.TagID, &tag.Title); err != nil {
-			return memos, tags, errm.Wrap(err, http.StatusInternalServerError)
+			return memos, tags, errm.Wrap(err, app.DBError)
 		}
 
 		memos = append(memos, memo)

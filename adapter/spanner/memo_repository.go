@@ -2,10 +2,10 @@ package spanner
 
 import (
 	"context"
+	"memo_sample_spanner/domain/app"
 	"memo_sample_spanner/domain/model"
 	"memo_sample_spanner/domain/repository"
 	"memo_sample_spanner/infra/cloudspanner"
-	"net/http"
 
 	"google.golang.org/api/iterator"
 
@@ -25,7 +25,7 @@ type memoRepository struct {
 func (m *memoRepository) Save(ctx context.Context, text string) (*model.Memo, error) {
 	id, err := generateID()
 	if err != nil {
-		return nil, errm.Wrap(err, http.StatusInternalServerError)
+		return nil, errm.Wrap(err, app.DBError)
 	}
 
 	mutations := make([]*spanner.Mutation, 0)
@@ -59,7 +59,7 @@ func (m *memoRepository) GetAll(ctx context.Context) ([]*model.Memo, error) {
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		memo := new(model.Memo)
@@ -95,13 +95,13 @@ func (m *memoRepository) Search(ctx context.Context, text string) ([]*model.Memo
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		memo := new(model.Memo)
 
 		if err := row.Columns(&memo.MemoID, &memo.Text); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, memo)
@@ -130,13 +130,13 @@ func (m *memoRepository) GetAllByIDs(ctx context.Context, ids []string) ([]*mode
 			break
 		}
 		if err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		memo := new(model.Memo)
 
 		if err := row.Columns(&memo.MemoID, &memo.Text); err != nil {
-			return list, errm.Wrap(err, http.StatusInternalServerError)
+			return list, errm.Wrap(err, app.DBError)
 		}
 
 		list = append(list, memo)

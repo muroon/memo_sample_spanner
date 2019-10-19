@@ -2,6 +2,7 @@ package apperror
 
 import (
 	"fmt"
+	"memo_sample_spanner/domain/app"
 	"strconv"
 
 	"github.com/morikuni/failure"
@@ -14,7 +15,7 @@ func NewErrorManager() ErrorManager {
 
 type errorManager struct{}
 
-func (em errorManager) Wrap(err error, code int) error {
+func (em errorManager) Wrap(err error, code app.Error) error {
 
 	cd := failure.StringCode(fmt.Sprintf("%d", code))
 	err = failure.Wrap(err, failure.WithCode(cd))
