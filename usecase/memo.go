@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"memo_sample_spanner/domain/app"
 	"memo_sample_spanner/domain/model"
 	"memo_sample_spanner/domain/repository"
 	"memo_sample_spanner/infra/error"
 	"memo_sample_spanner/usecase/input"
-	"net/http"
 )
 
 // Memo memo related interface
@@ -47,7 +47,7 @@ func (m memo) ValidatePost(ipt input.PostMemo) error {
 		err := fmt.Errorf("text parameter is invalid. %s", ipt.Text)
 		return m.errm.Wrap(
 			err,
-			http.StatusBadRequest,
+			app.InputError,
 		)
 	}
 
@@ -67,7 +67,7 @@ func (m memo) ValidateGet(ipt input.GetMemo) error {
 		err := fmt.Errorf("ID parameter is invalid. %s", ipt.ID)
 		return m.errm.Wrap(
 			err,
-			http.StatusBadRequest,
+			app.InputError,
 		)
 	}
 
@@ -97,7 +97,7 @@ func (m memo) ValidatePostMemoAndTags(ipt input.PostMemoAndTags) error {
 		err := fmt.Errorf("text parameter(MemoText) is invalid. %s", ipt.MemoText)
 		return m.errm.Wrap(
 			err,
-			http.StatusBadRequest,
+			app.InputError,
 		)
 	}
 
@@ -106,7 +106,7 @@ func (m memo) ValidatePostMemoAndTags(ipt input.PostMemoAndTags) error {
 			err := fmt.Errorf("text parameter(TagTitles) is invalid. %s", title)
 			return m.errm.Wrap(
 				err,
-				http.StatusBadRequest,
+				app.InputError,
 			)
 		}
 	}

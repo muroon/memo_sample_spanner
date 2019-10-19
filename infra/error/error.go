@@ -2,6 +2,7 @@ package apperror
 
 import (
 	"fmt"
+	"memo_sample_spanner/domain/app"
 
 	"golang.org/x/xerrors"
 )
@@ -19,12 +20,12 @@ type iWithCodeError interface {
 
 type withCodeError struct {
 	err   error
-	code  int
+	code  app.Error
 	frame xerrors.Frame
 }
 
 func (c withCodeError) Code() int {
-	return c.code
+	return int(c.code)
 }
 
 func (c withCodeError) Error() string {
@@ -44,7 +45,7 @@ func (c withCodeError) Format(f fmt.State, ru rune) {
 	xerrors.FormatError(c, f, ru)
 }
 
-func (em errorManager) Wrap(err error, code int) error {
+func (em errorManager) Wrap(err error, code app.Error) error {
 	e := xerrors.Errorf("error occurred: %w", err)
 	return &withCodeError{err: e, code: code, frame: xerrors.Caller(1)}
 }

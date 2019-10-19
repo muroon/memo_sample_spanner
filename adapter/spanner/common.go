@@ -1,10 +1,10 @@
 package spanner
 
 import (
+	"memo_sample_spanner/domain/app"
 	"memo_sample_spanner/domain/model"
 	"memo_sample_spanner/infra/cloudspanner"
 	"memo_sample_spanner/infra/error"
-	"net/http"
 
 	"github.com/google/uuid"
 )
@@ -24,7 +24,7 @@ func yoRODB() model.YORODB {
 func generateID() (string, error) {
 	u4, err := uuid.NewRandom()
 	if err != nil {
-		return "", errm.Wrap(err, http.StatusInternalServerError)
+		return "", errm.Wrap(err, app.DBError)
 	}
 
 	return u4.String(), nil

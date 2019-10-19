@@ -2,7 +2,7 @@ package cloudspanner
 
 import (
 	"context"
-	"net/http"
+	"memo_sample_spanner/domain/app"
 	"time"
 
 	"cloud.google.com/go/spanner"
@@ -38,7 +38,7 @@ func (d *spannerDB) BatchReadOnlyTransaction(
 	tx, err := d.client.BatchReadOnlyTransaction(ctx, spanner.StrongRead()) // TODO:
 	defer tx.Close()
 	if err != nil {
-		return d.errManager.Wrap(err, http.StatusInternalServerError)
+		return d.errManager.Wrap(err, app.DBError)
 	}
 	ctx = setBatchReadOnlyTransaction(ctx, tx)
 
