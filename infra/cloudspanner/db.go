@@ -7,11 +7,14 @@ import (
 	"time"
 
 	"cloud.google.com/go/spanner"
+
+	"github.com/gcpug/handy-spanner/fake"
 )
 
 // ISpannerDB spannerDB interface
 type ISpannerDB interface {
 	OpenClient(ctx context.Context) error
+	OpenClientLocal(ctx context.Context) error
 	CloseClient()
 	Client() *spanner.Client
 
@@ -70,23 +73,28 @@ func setDatabaseID(id string) Option {
 }
 
 type spannerDB struct {
-	projectID  string
-	instanceID string
-	databaseID string
-	client     *spanner.Client
-	errManager apperror.ErrorManager
+	projectID   string
+	instanceID  string
+	databaseID  string
+	client      *spanner.Client
+	errManager  apperror.ErrorManager
+	localServer *fake.Server
 }
 
 func (d *spannerDB) OpenClient(ctx context.Context) error {
 	databaseName := fmt.Sprintf("projects/%s/instances/%s/databases/%s",
 		d.projectID, d.instanceID, d.databaseID,
 	)
+
 	var err error
 	d.client, err = spanner.NewClient(ctx, databaseName)
 	return err
 }
 
 func (d *spannerDB) CloseClient() {
+	if d.localServer != nil {
+		d.localServer.Stop()
+	}
 	if d.client != nil {
 		d.client.Close()
 	}

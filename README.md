@@ -14,4 +14,12 @@ The sample code of Cloud Spanner using "The Clean Architecture"
 | SPN_INSTANCE_ID | instance ID of Cloud Spanner |
 | SPN_DATABASE_ID | database in instance  |
 
+### use spanner emulator
 
+You can use local [spanner emulator](https://github.com/gcpug/handy-spanner).
+So you must set an environment parameter SPANNER_EMULATOR_HOST.
+
+```
+go build
+env SPANNER_EMULATOR_HOST=localhost:9999 ./memo_sample_spanner -local
+```
