@@ -16,8 +16,12 @@ func init() {
 }
 
 // OpenClient open spanner client
-func OpenClient(ctx context.Context) error {
+func OpenClient(ctx context.Context, local bool) error {
+	if local {
+		return spnDB.OpenClientLocal(ctx)
+	}
 	return spnDB.OpenClient(ctx)
+
 }
 
 // CloseClient close spanner client

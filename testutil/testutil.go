@@ -32,7 +32,7 @@ func (t testManager) GetSpannerRepository() (
 
 // connectTestDB DB接続
 func (t testManager) ConnectTestDB() error {
-	return cloudspanner.OpenClient(context.Background())
+	return cloudspanner.OpenClient(context.Background(), false)
 }
 
 // closeTestDB DB切断
