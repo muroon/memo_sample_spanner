@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go/spanner v1.0.0
-	github.com/gcpug/handy-spanner v0.1.1
+	github.com/gcpug/handy-spanner v0.2.0
 	github.com/google/uuid v1.1.1
 	github.com/google/wire v0.3.0
 	github.com/morikuni/failure v0.12.0

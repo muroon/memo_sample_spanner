@@ -43,6 +43,8 @@ github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5Kwzbycv
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/gcpug/handy-spanner v0.1.1 h1:ZUaI1JCX2tFw6kgMD/wLaDPI65kQluOw52Ia4b63VfM=
 github.com/gcpug/handy-spanner v0.1.1/go.mod h1:KUaYQbxGRLrbLTB5rUNuT8oDfGw243aT/JIUcW6WB7M=
+github.com/gcpug/handy-spanner v0.2.0 h1:edXeUKvzWQxfEq7CW9VQKp7+L7ehYyB1eZ3ktTIZ1KI=
+github.com/gcpug/handy-spanner v0.2.0/go.mod h1:KUaYQbxGRLrbLTB5rUNuT8oDfGw243aT/JIUcW6WB7M=
 github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540/go.mod h1:+sE8vrLDS2M0pZkBk0wy6+nLdKexVDrl/jBqQOTDThA=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-lintpack/lintpack v0.5.2/go.mod h1:NwZuYi2nUHho8XEIZ6SIxihrnPoqBTDqfpXvXAN0sXM=
