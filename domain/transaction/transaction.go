@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// ITransaction transaction interface
 type ITransaction interface {
 	ReadWriteTransaction(
 		ctx context.Context,

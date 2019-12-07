@@ -6,6 +6,7 @@ import (
 	"memo_sample_spanner/usecase/input"
 )
 
+// IInteractor interface of interacor
 type IInteractor interface {
 	PostMemo(ctx context.Context, ipt input.PostMemo)
 	GetMemos(ctx context.Context)

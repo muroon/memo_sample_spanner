@@ -29,6 +29,7 @@ func CloseClient() {
 	spnDB.CloseClient()
 }
 
+// DB db instance
 func DB() ISpannerDB {
 	return spnDB
 }

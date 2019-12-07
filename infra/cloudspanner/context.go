@@ -6,6 +6,7 @@ import (
 	"cloud.google.com/go/spanner"
 )
 
+// SpannerTransactionContext context of spanner transaction
 const SpannerTransactionContext string = "spnContext"
 
 type spannerTxContext struct {
