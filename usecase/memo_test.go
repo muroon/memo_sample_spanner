@@ -88,7 +88,7 @@ func TestMemoSearchTagsAndMemosSuccess(t *testing.T) {
 
 	// check Tag
 	for _, tag := range tgs {
-		if strings.Index(tag.Title.StringVal, tagTitle) == -1 {
+		if !strings.Contains(tag.Title.StringVal, tagTitle) {
 			t.Errorf("Tag And Memo Save Error. tag.Title:%s", tag.Title)
 		}
 	}

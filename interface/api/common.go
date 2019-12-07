@@ -45,9 +45,10 @@ func setResKey(ctx context.Context, value string) context.Context {
 // deleteResponseWriter
 func deleteResponseWriter(ctx context.Context) {
 	key := getResKey(ctx)
-	if _, ok := responseMap[key]; ok {
-		delete(responseMap, key)
+	if _, ok := responseMap[key]; !ok {
+		return
 	}
+	delete(responseMap, key)
 }
 
 // getResKey

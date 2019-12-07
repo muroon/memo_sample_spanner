@@ -7,7 +7,7 @@ import (
 
 // connectTestDB DB接続
 func connectTestDB(ctx context.Context) {
-	cloudspanner.OpenClient(ctx, false)
+	_ = cloudspanner.OpenClient(ctx, false)
 }
 
 // closeTestDB DB切断

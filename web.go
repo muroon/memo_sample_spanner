@@ -25,5 +25,8 @@ func main() {
 	http.HandleFunc("/post", api.PostMemo)
 	http.HandleFunc("/post/memo_tags", api.PostMemoAndTags)
 	http.HandleFunc("/search/tags_memos", api.SearchTagsAndMemos)
-	http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		logger.NewLogger().Errorf("ListenAndServe error: %#+v\n", err)
+	}
 }

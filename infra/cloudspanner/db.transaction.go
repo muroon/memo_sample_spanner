@@ -36,10 +36,10 @@ func (d *spannerDB) BatchReadOnlyTransaction(
 	f func(ctx context.Context) error,
 ) error {
 	tx, err := d.client.BatchReadOnlyTransaction(ctx, spanner.StrongRead()) // TODO:
-	defer tx.Close()
 	if err != nil {
 		return d.errManager.Wrap(err, app.DBError)
 	}
+	defer tx.Close()
 	ctx = setBatchReadOnlyTransaction(ctx, tx)
 
 	return f(ctx)

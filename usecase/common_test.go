@@ -35,5 +35,5 @@ func connectTestDB() {
 
 // closeTestDB DB切断
 func closeTestDB() {
-	testManager.CloseTestDB()
+	_ = testManager.CloseTestDB()
 }

@@ -71,6 +71,11 @@ func TestTagAndMemoGetAllByMemoIDSuccess(t *testing.T) {
 
 	flag := false
 	list, err := repoT.GetAllByMemoID(ctx, memo.MemoID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	for _, tg := range list {
 		if tg.TagID == tag.TagID {
 			flag = true
@@ -129,7 +134,7 @@ func TestTagAndMemoSearchMemoIDsByTitleSuccess(t *testing.T) {
 	}
 
 	for _, tg := range tags {
-		if strings.Index(tg.Title.StringVal, tag.Title.StringVal) == -1 {
+		if !strings.Contains(tg.Title.StringVal, tag.Title.StringVal) {
 			t.Error(fmt.Errorf("SearchMemoIDsByTitle Error"))
 			break
 		}
