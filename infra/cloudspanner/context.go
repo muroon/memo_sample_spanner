@@ -2,6 +2,7 @@ package cloudspanner
 
 import (
 	"context"
+	"memo_sample_spanner/domain/app"
 
 	"cloud.google.com/go/spanner"
 )
@@ -21,7 +22,7 @@ func setReadWriteTransaction(
 	spnCtx := &spannerTxContext{
 		rwTx: tx,
 	}
-	return context.WithValue(ctx, SpannerTransactionContext, spnCtx)
+	return context.WithValue(ctx, app.ContextKey(app.SpannerTransaction), spnCtx)
 }
 
 func setReadOnlyTransaction(
@@ -30,7 +31,7 @@ func setReadOnlyTransaction(
 	spnCtx := &spannerTxContext{
 		roTx: tx,
 	}
-	return context.WithValue(ctx, SpannerTransactionContext, spnCtx)
+	return context.WithValue(ctx, app.ContextKey(app.SpannerTransaction), spnCtx)
 }
 
 func setBatchReadOnlyTransaction(
@@ -39,7 +40,7 @@ func setBatchReadOnlyTransaction(
 	spnCtx := &spannerTxContext{
 		broTx: tx,
 	}
-	return context.WithValue(ctx, SpannerTransactionContext, spnCtx)
+	return context.WithValue(ctx, app.ContextKey(app.SpannerTransaction), spnCtx)
 }
 
 func getAllTransactions(
@@ -56,7 +57,7 @@ func getSpannerContext(
 	ctx context.Context,
 ) *spannerTxContext {
 
-	spnCtx, ok := ctx.Value(SpannerTransactionContext).(*spannerTxContext)
+	spnCtx, ok := ctx.Value(app.ContextKey(app.SpannerTransaction)).(*spannerTxContext)
 	if !ok {
 		spnCtx = new(spannerTxContext)
 	}

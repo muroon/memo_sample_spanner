@@ -9,3 +9,14 @@ const (
 	// DBError db error
 	DBError
 )
+
+// ContextKey key for transaction context
+type ContextKey string
+
+const (
+	// ResKey response key
+	ResKey = "http.response.key"
+
+	// SpannerTransaction spanner transaction key
+	SpannerTransaction = "spanner.transaction"
+)

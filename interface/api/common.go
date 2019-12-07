@@ -4,15 +4,9 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"memo_sample_spanner/domain/app"
 	"net/http"
 	"time"
-)
-
-// ContextKey key for transaction context
-type ContextKey string
-
-const (
-	resKey = "http.response.key"
 )
 
 var responseMap map[string]http.ResponseWriter
@@ -45,7 +39,7 @@ func getResponseWriter(ctx context.Context) http.ResponseWriter {
 
 // setResKey
 func setResKey(ctx context.Context, value string) context.Context {
-	return context.WithValue(ctx, ContextKey(resKey), value)
+	return context.WithValue(ctx, app.ContextKey(app.ResKey), value)
 }
 
 // deleteResponseWriter
@@ -58,11 +52,11 @@ func deleteResponseWriter(ctx context.Context) {
 
 // getResKey
 func getResKey(ctx context.Context) string {
-	return getKey(ctx, ContextKey(resKey))
+	return getKey(ctx, app.ContextKey(app.ResKey))
 }
 
 // getKey get key
-func getKey(ctx context.Context, ctxKey ContextKey) string {
+func getKey(ctx context.Context, ctxKey app.ContextKey) string {
 	key, _ := ctx.Value(ctxKey).(string)
 	return key
 }
