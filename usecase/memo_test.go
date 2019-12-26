@@ -107,3 +107,69 @@ func TestMemoSearchTagsAndMemosSuccess(t *testing.T) {
 		t.Error("Tag And Memo Save Error")
 	}
 }
+
+func TestReadWriteError(t *testing.T) {
+	ctx := context.Background()
+
+	// memo usecase
+	memo := NewMemo(getSpannerRepository())
+
+	connectTestDB()
+	defer closeTestDB()
+
+	tx := getSpannerTransaction()
+
+	var (
+		memoID1 string
+		memoID2 string
+	)
+
+	_, err := tx.ReadWriteTransaction(ctx, func(ctx context.Context) error {
+
+		var err error
+		ipt := input.PostMemo{Text:"NG Form RollBack (Before)."}
+		memoID1, err = memo.Post(ctx, ipt)
+		if err != nil {
+			return err
+		}
+
+		err = memo.ValidatePost(*new(input.PostMemo))
+		if err != nil {
+			t.Log("Validate error")
+			return err
+		}
+
+		ipt.Text = "NG Form RollBack (After)."
+		memoID2, err = memo.Post(ctx, ipt)
+		return err
+	})
+	if err != nil {
+		t.Logf("OK. %T, %#+v\n", err, err)
+	} else {
+		t.Error("ReadWriteError is Error")
+	}
+
+	_, err = memo.GetMemo(ctx, input.GetMemo{ID: memoID1})
+	if err != nil {
+		t.Logf("OK. %T, %#+v\n", err, err)
+	} else {
+		t.Error("ReadWriteError is Error")
+	}
+
+	_, err = memo.GetMemo(ctx, input.GetMemo{ID: memoID2})
+	if err != nil {
+		t.Logf("OK. %T, %#+v\n", err, err)
+	} else {
+		t.Error("ReadWriteError is Error")
+	}
+
+	// retry
+	_, err = tx.ReadWriteTransaction(ctx, func(ctx context.Context) error {
+		ipt := input.PostMemo{Text:"Retry Test Memo."}
+		_, err = memo.Post(ctx, ipt)
+		return err
+	})
+	if err != nil {
+		t.Error(err)
+	}
+}
