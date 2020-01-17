@@ -3,6 +3,7 @@ package cloudspanner
 import (
 	"context"
 	"fmt"
+	"memo_sample_spanner/domain/model"
 	apperror "memo_sample_spanner/infra/error"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 
 // ISpannerDB spannerDB interface
 type ISpannerDB interface {
+	model.YORODB
+
 	OpenClient(ctx context.Context) error
 	OpenClientLocal(ctx context.Context) error
 	CloseClient()

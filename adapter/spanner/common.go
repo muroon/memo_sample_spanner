@@ -17,7 +17,7 @@ func init() {
 
 // yoRODB get YORODB instance
 func yoRODB() model.YORODB {
-	return cloudspanner.DB().(model.YORODB)
+	return cloudspanner.DB()
 }
 
 // generateID generate Key
