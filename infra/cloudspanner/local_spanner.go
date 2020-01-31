@@ -40,25 +40,25 @@ func (d *spannerDB) initalizeTables(ctx context.Context, databaseName string) er
 	}
 
 	return d.localServer.ParseAndApplyDDL(ctx, databaseName, strings.NewReader(schema))
+	return nil
 }
 
 func readSchema(ctx context.Context) (string, error) {
 	var schema string
-	err := func() error {
-		f, err := os.Open(shemaFile)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		// 一気に全部読み取り
-		b, err := ioutil.ReadAll(f)
-		if err != nil {
-			return err
-		}
-		schema = string(b)
-		return nil
+	f, err := os.Open(shemaFile)
+	if err != nil {
+		return schema, err
+	}
+	defer func() {
+		_ := f.Close()
 	}()
+
+	// 一気に全部読み取り
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return schema, err
+	}
+	schema = string(b)
 
 	return schema, err
 }
