@@ -6,6 +6,7 @@ import (
 	"memo_sample_spanner/di"
 	"memo_sample_spanner/infra/cloudspanner"
 	"memo_sample_spanner/infra/logger"
+	"net"
 	"net/http"
 )
 
@@ -25,8 +26,12 @@ func main() {
 	http.HandleFunc("/post", api.PostMemo)
 	http.HandleFunc("/post/memo_tags", api.PostMemoAndTags)
 	http.HandleFunc("/search/tags_memos", api.SearchTagsAndMemos)
-	err = http.ListenAndServe(":8080", nil)
+	lin, err := net.Listen("tcp4", ":8080")
 	if err != nil {
-		logger.NewLogger().Errorf("ListenAndServe error: %#+v\n", err)
+		logger.NewLogger().Errorf("Listen error: %#+v\n", err)
 	}
+	defer lin.Close()
+
+	s := new(http.Server)
+	s.Serve(lin)
 }
