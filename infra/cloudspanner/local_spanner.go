@@ -50,7 +50,7 @@ func readSchema(ctx context.Context) (string, error) {
 		return schema, err
 	}
 	defer func() {
-		_ := f.Close()
+		_ = f.Close()
 	}()
 
 	// 一気に全部読み取り
